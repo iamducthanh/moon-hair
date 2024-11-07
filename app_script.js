@@ -97,6 +97,8 @@ function tinhLuong() {
   let dongBatDauLuong = 5;
   let dongBatDauDT = 4;
   let startColTho = 5;
+  let tongDoanhThu = 0;
+
   // sheet cấu hình
   const cauHinh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Cấu hình");
   const tenThang = cauHinh.getRange("C1").getValue();
@@ -165,7 +167,8 @@ function tinhLuong() {
       name: thoChinh[i][0],
       luong: luongThoChinh[i][0],
       index: headerThoChinh.indexOf(thoChinh[i][0]) + startColTho,
-      color: colThoChinh.getCell(i + 1, 1).getBackground()
+      color: colThoChinh.getCell(i + 1, 1).getBackground(),
+      tongLuong: 0
     })
   }
 
@@ -174,8 +177,8 @@ function tinhLuong() {
       name: thoPhu[i][0],
       luong: luongThoPhu[i][0],
       index: headerThoPhu.indexOf(thoPhu[i][0]) + startColTho + thoChinh.length,
-      color: colThoPhu.getCell(i + 1, 1).getBackground()
-
+      color: colThoPhu.getCell(i + 1, 1).getBackground(),
+      tongLuong: 0
     })
   }
 
@@ -189,6 +192,7 @@ function tinhLuong() {
       customerL[i] = customerDT[i];
       columnCustomerL.getCell(i + 1, 1).setBorder(true, true, true, true, true, true);
       billL[i] = billDT[i];
+      tongDoanhThu += Number(billDT[i]);
       columnBillL.getCell(i + 1, 1).setBorder(true, true, true, true, true, true);
       phuongThucL[i] = phuongThucDT[i];
       let colorPT = "";
@@ -202,8 +206,10 @@ function tinhLuong() {
         .setBackground(colorPT);
       const curentThoChinh = listThoChinh.find(item => item.name == thoChinhDT[i]);
       if (curentThoChinh) {
+        let luong = billDT[i] / 100 * curentThoChinh.luong;
+        curentThoChinh.tongLuong += luong;
         sheetLuong.getRange(dongBatDauLuong + i, curentThoChinh.index)
-          .setValue(billDT[i] / 100 * curentThoChinh.luong)
+          .setValue(luong)
           .setBorder(true, true, true, true, true, true)
           .setHorizontalAlignment("right")
           .setFontSize("12")
@@ -214,15 +220,19 @@ function tinhLuong() {
       const curentThoPhu = listThoPhu.find(item => item.name == thoPhuDT[i]);
       if (curentThoPhu) {
         if (customerDT[i][0].toLowerCase() == "bsp" || customerDT[i][0].toLowerCase() == "gội") {
+          let luong = billDT[i] / 100 * 20;
+          curentThoPhu.tongLuong += luong;
           sheetLuong.getRange(dongBatDauLuong + i, curentThoPhu.index)
-            .setValue(billDT[i] / 100 * 20)
+            .setValue(luong)
             .setHorizontalAlignment("right")
             .setFontSize("12")
             .setBackground(curentThoPhu.color)
             .setNumberFormat("#,##0 đ");
         } else {
+          let luong = billDT[i] / 100 * curentThoPhu.luong;
+          curentThoPhu.tongLuong += luong;
           sheetLuong.getRange(dongBatDauLuong + i, curentThoPhu.index)
-            .setValue(billDT[i] / 100 * curentThoPhu.luong)
+            .setValue(luong)
             .setHorizontalAlignment("right")
             .setFontSize("12")
             .setBackground(curentThoPhu.color)
@@ -240,29 +250,76 @@ function tinhLuong() {
   columnPhuongThucL.setValues(phuongThucL).setFontSize("12");
 
   sheetLuong.getRange(dongBatDauLuong, startColTho, dateDT.length, listThoPhu.length + listThoChinh.length + 1).setBorder(true, true, true, true, true, true).setHorizontalAlignment("right");
-  
-  var startRow = 5; // Dòng bắt đầu từ A5
-  var column = 1; // Cột A
-  
-  // Lấy tất cả giá trị trong cột A từ dòng 5 trở đi
-  var data = sheetLuong.getRange("A" + dongBatDauLuong + ":A" + lastRow).getValues();
-  var startMergeRow = startRow;  // Dòng bắt đầu merge
-  let curentDateCheck = data[0][0]
-  let coutSame = 1;
-  for (var i = 1; i < data.length; i++) {
-    Logger.log(curentDateCheck)
-    if(data[i][0] == curentDateCheck) {
-      coutSame += 1;
-    } else {
-      if (coutSame != 1) {
-        sheetLuong.getRange(startMergeRow, 1, coutSame, 1).merge(); // (3, col): bắt đầu từ hàng 3, cột col, chiều cao là 2 hàng và 1 cột
-        startMergeRow += coutSame;
-      } else {
-        startMergeRow += 1;
-      }
-      coutSame = 1;
-      curentDateCheck = data[i][0];
-    }
+
+  sheetLuong.getRange(lastRow + 2, 1, 2, 2).merge()
+    .setBorder(true, true, true, true, true, true)
+    .setValue("Tổng").setFontSize("14")
+    .setFontWeight("bold")
+    .setHorizontalAlignment("center")
+    .setVerticalAlignment("middle");
+
+  sheetLuong.getRange(lastRow + 2, 3, 2, 1).merge()
+    .setBorder(true, true, true, true, true, true)
+    .setValue(tongDoanhThu).setFontSize("14")
+    .setFontWeight("bold")
+    .setHorizontalAlignment("center")
+    .setVerticalAlignment("middle")
+    .setNumberFormat("#,##0 đ");
+
+  sheetLuong.getRange(lastRow + 2, 4, 2, 1).merge()
+    .setBorder(true, true, true, true, true, true)
+    .setValue("Lương").setFontSize("14")
+    .setFontWeight("bold")
+    .setHorizontalAlignment("center")
+    .setVerticalAlignment("middle");
+
+
+  for (let i = 0; i < listThoChinh.length; i++) {
+    sheetLuong.getRange(lastRow + 2, listThoChinh[i].index, 2, 1).merge()
+      .setBorder(true, true, true, true, true, true)
+      .setValue(listThoChinh[i].tongLuong).setFontSize("14")
+      .setFontWeight("bold")
+      .setHorizontalAlignment("right")
+      .setVerticalAlignment("middle")
+      .setBackground(listThoChinh[i].color)
+      .setNumberFormat("#,##0 đ");
   }
+    for (let i = 0; i < listThoPhu.length; i++) {
+    sheetLuong.getRange(lastRow + 2, listThoPhu[i].index, 2, 1).merge()
+      .setBorder(true, true, true, true, true, true)
+      .setValue(listThoPhu[i].tongLuong).setFontSize("14")
+      .setFontWeight("bold")
+      .setHorizontalAlignment("right")
+      .setVerticalAlignment("middle")
+      .setBackground(listThoPhu[i].color)
+      .setNumberFormat("#,##0 đ");
+  }
+
+  Logger.log(tongDoanhThu)
+
+
+  // var startRow = 5; // Dòng bắt đầu từ A5
+  // var column = 1; // Cột A
+
+  // // Lấy tất cả giá trị trong cột A từ dòng 5 trở đi
+  // var data = sheetLuong.getRange("A" + dongBatDauLuong + ":A" + lastRow).getValues();
+  // var startMergeRow = startRow;  // Dòng bắt đầu merge
+  // let curentDateCheck = data[0][0]
+  // let coutSame = 1;
+  // for (var i = 1; i < data.length; i++) {
+  //   Logger.log(curentDateCheck)
+  //   if(data[i][0] == curentDateCheck) {
+  //     coutSame += 1;
+  //   } else {
+  //     if (coutSame != 1) {
+  //       sheetLuong.getRange(startMergeRow, 1, coutSame, 1).merge(); // (3, col): bắt đầu từ hàng 3, cột col, chiều cao là 2 hàng và 1 cột
+  //       startMergeRow += coutSame;
+  //     } else {
+  //       startMergeRow += 1;
+  //     }
+  //     coutSame = 1;
+  //     curentDateCheck = data[i][0];
+  //   }
+  // }
 
 }
