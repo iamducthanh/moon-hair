@@ -32,11 +32,11 @@ function createOrUpdateSheetLuong() {
       .setColumnWidth(9, 150)
       .setColumnWidth(10, 150)
       .setColumnWidth(11, 150);
-    const cellTitle = sheetLuong.getRange("A1");
+    const cellTitle = sheetLuong.getRange("A2");
     let title = "Lương tháng " + tenThang;
     cellTitle.setValue(title);
     cellTitle.setFontWeight("bold");
-    cellTitle.setFontSize(15);
+    cellTitle.setFontSize(17);
     var values = [["Ngày", "Tên khách", "Tiền bill", "Phương thức"]];
 
     const headerCommons = sheetLuong.getRange(3, 1, 2, 4);
@@ -135,7 +135,7 @@ function tinhLuong() {
     let lastRowLuong = sheetLuong.getLastRow();
     if (lastRowLuong > 4) { // nếu đã fill dữ liệu lương
       // clear dòng tổng kết
-      sheetLuong.getRange(lastRowLuong, 1, 2, 50).clearContent().clearFormat().setBackground("#ffffff").setBorder(false, false, false, false, false, false).setFontFamily("Arial").setFontSize(12);
+      sheetLuong.getRange(lastRowLuong, 1, 2, 50).clearContent().clearFormat().setBackground("#ffffff").setBorder(false, false, false, false, false, false).setFontFamily("Arial").setFontSize(12).setHorizontalAlignment("center");
       // clear merge của cột ngày
       sheetLuong.getRange(5, 1, lastRowLuong - 1, 1).breakApart();
     }
@@ -230,7 +230,7 @@ function tinhLuong() {
         sheetLuong.getRange(dongBatDauLuong + i, 1, 1, 50).clearContent().clearFormat().setBackground("#ffffff").setBorder(false, false, false, false, false, false).setFontFamily("Arial").setFontSize(12);
 
         dateL[i] = dateDT[i];
-        columnDateL.getCell(i + 1, 1).setBorder(true, true, true, true, true, true).setHorizontalAlignment("left").setFontWeight("bold");;
+        columnDateL.getCell(i + 1, 1).setBorder(true, true, true, true, true, true).setHorizontalAlignment("center").setFontWeight("bold");;
         customerL[i] = customerDT[i];
         columnCustomerL.getCell(i + 1, 1).setBorder(true, true, true, true, true, true);
         billL[i] = billDT[i];
@@ -246,14 +246,14 @@ function tinhLuong() {
           colorTextPT = "#1c4587";
         }
         columnPhuongThucL.getCell(i + 1, 1).setBorder(true, true, true, true, true, true)
-          .setHorizontalAlignment("right")
+          .setHorizontalAlignment("center")
           .setBackground(colorPT).setFontColor(colorTextPT);
         const curentThoChinh = listThoChinh.find(item => item.name == thoChinhDT[i]);
         if (curentThoChinh) {
           sheetLuong.getRange(dongBatDauLuong + i, curentThoChinh.index)
             .setValue(billDT[i] / 100 * curentThoChinh.luong)
             .setBorder(true, true, true, true, true, true)
-            .setHorizontalAlignment("right")
+            .setHorizontalAlignment("center")
             .setFontSize("12")
             .setBackground(curentThoChinh.color)
             .setNumberFormat("#,##0 đ");
@@ -264,14 +264,14 @@ function tinhLuong() {
           if (customerDT[i][0].toLowerCase() == "bsp" || customerDT[i][0].toLowerCase() == "gội" || customerDT[i][0].toLowerCase() == "cắt") {
             sheetLuong.getRange(dongBatDauLuong + i, curentThoPhu.index)
               .setValue(billDT[i] / 100 * 20)
-              .setHorizontalAlignment("right")
+              .setHorizontalAlignment("center")
               .setFontSize("12")
               .setBackground(curentThoPhu.color)
               .setNumberFormat("#,##0 đ");
           } else {
             sheetLuong.getRange(dongBatDauLuong + i, curentThoPhu.index)
               .setValue(billDT[i] / 100 * curentThoPhu.luong)
-              .setHorizontalAlignment("right")
+              .setHorizontalAlignment("center")
               .setFontSize("12")
               .setBackground(curentThoPhu.color)
               .setNumberFormat("#,##0 đ");
@@ -293,7 +293,7 @@ function tinhLuong() {
     columnStatusDT.setValues(statusDT);
     // end set data
     // căn chữ cột ngày sửa
-    sheetLuong.getRange(dongBatDauLuong, startColTho, dateDT.length, listThoPhu.length + listThoChinh.length + 1).setBorder(true, true, true, true, true, true).setHorizontalAlignment("right");
+    sheetLuong.getRange(dongBatDauLuong, startColTho, dateDT.length, listThoPhu.length + listThoChinh.length + 1).setBorder(true, true, true, true, true, true).setHorizontalAlignment("center");
 
     // start tinh tong luong
     for (let i = 0; i < listThoChinh.length; i++) {
@@ -357,7 +357,7 @@ function tinhLuong() {
         .setBorder(true, true, true, true, true, true)
         .setValue(listThoChinh[i].tongLuong).setFontSize("14")
         .setFontWeight("bold")
-        .setHorizontalAlignment("right")
+        .setHorizontalAlignment("center")
         .setVerticalAlignment("middle")
         .setBackground(listThoChinh[i].color)
         .setNumberFormat("#,##0 đ");
@@ -368,7 +368,7 @@ function tinhLuong() {
         .setBorder(true, true, true, true, true, true)
         .setValue(listThoPhu[i].tongLuong).setFontSize("14")
         .setFontWeight("bold")
-        .setHorizontalAlignment("right")
+        .setHorizontalAlignment("center")
         .setVerticalAlignment("middle")
         .setBackground(listThoPhu[i].color)
         .setNumberFormat("#,##0 đ");
