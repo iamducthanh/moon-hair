@@ -2,16 +2,16 @@ function createOrUpdateSheetLuong() {
   var ui = SpreadsheetApp.getUi(); // Lấy đối tượng UI
 
   // sheet cấu hình
-  const cauHinh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Cấu hình");
-  const tenThang = cauHinh.getRange("C1").getValue();
+  const cauHinh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("MẪU THÀNH");
+  const tenThang = cauHinh.getRange("L15").getValue();
 
   // Hiển thị hộp thoại xác nhận
   var response = ui.alert("Xác nhận", "Bạn có muốn tạo bảng lương cho tháng " + tenThang + "?", ui.ButtonSet.YES_NO);
 
   // Kiểm tra phản hồi của người dùng
   if (response == ui.Button.YES) {
-    const sheetDoanhThu = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Doanh Thu T" + tenThang);
-    const sheetLuong = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Lương T" + tenThang);
+    const sheetDoanhThu = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Số Liệu T" + tenThang);
+    const sheetLuong = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("T" + tenThang);
     sheetLuong.getDataRange().setVerticalAlignment("middle");
 
     var lastColumn = sheetLuong.getLastColumn();
@@ -120,16 +120,16 @@ function tinhLuong() {
   let tongDoanhThu = 0;
 
   // sheet cấu hình
-  const cauHinh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Cấu hình");
-  const tenThang = cauHinh.getRange("C1").getValue();
+  const cauHinh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("MẪU THÀNH");
+  const tenThang = cauHinh.getRange("L15").getValue();
 
   // Hiển thị hộp thoại xác nhận
   var response = ui.alert("Xác nhận", "Bạn có muốn tính lương cho tháng " + tenThang + "?", ui.ButtonSet.YES_NO);
 
   if (response == ui.Button.YES) {
 
-    const sheetDoanhThu = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Doanh Thu T" + tenThang);
-    const sheetLuong = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Lương T" + tenThang);
+    const sheetDoanhThu = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Số Liệu T" + tenThang);
+    const sheetLuong = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("T" + tenThang);
 
     // clear data + format
     let lastRowLuong = sheetLuong.getLastRow();
