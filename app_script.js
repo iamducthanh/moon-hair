@@ -12,7 +12,7 @@ function createOrUpdateSheetLuong() {
   if (response == ui.Button.YES) {
     const sheetDoanhThu = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Số Liệu T" + tenThang);
     const sheetLuong = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("T" + tenThang);
-    sheetLuong.getDataRange().setVerticalAlignment("middle");
+    sheetLuong.getDataRange().setVerticalAlignment("middle").setHorizontalAlignment("center");
 
     var lastColumn = sheetLuong.getLastColumn();
     if (lastColumn > 3) {
@@ -36,7 +36,7 @@ function createOrUpdateSheetLuong() {
     let title = "Lương tháng " + tenThang;
     cellTitle.setValue(title);
     cellTitle.setFontWeight("bold");
-    cellTitle.setFontSize(17);
+    cellTitle.setFontSize(17).setHorizontalAlignment("left");
     var values = [["Ngày", "Tên khách", "Tiền bill", "Phương thức"]];
 
     const headerCommons = sheetLuong.getRange(3, 1, 2, 4);
@@ -44,7 +44,7 @@ function createOrUpdateSheetLuong() {
       // Gộp ô tại hàng 3 và hàng 4 cho mỗi cột
       sheetLuong.getRange(3, col, 2, 1).merge(); // (3, col): bắt đầu từ hàng 3, cột col, chiều cao là 2 hàng và 1 cột
       sheetLuong.getRange(3, col).setValue(values[0][col - 1]);
-      sheetLuong.getRange(3, col).setVerticalAlignment("middle");
+      sheetLuong.getRange(3, col).setVerticalAlignment("middle").setHorizontalAlignment("center");
     }
     headerCommons.setFontWeight("bold");
     headerCommons.setFontSize(12);
@@ -103,7 +103,7 @@ function createOrUpdateSheetLuong() {
       .setFontSize(12)
       .setBackground("#d3d3d3")
       .setBorder(true, true, true, true, true, true)
-      .setHorizontalAlignment("right")
+      .setHorizontalAlignment("center")
       .setVerticalAlignment("middle");
     ui.alert("Tạo bảng lương thành công.");
   } else {
@@ -232,9 +232,9 @@ function tinhLuong() {
         dateL[i] = dateDT[i];
         columnDateL.getCell(i + 1, 1).setBorder(true, true, true, true, true, true).setHorizontalAlignment("center").setFontWeight("bold");;
         customerL[i] = customerDT[i];
-        columnCustomerL.getCell(i + 1, 1).setBorder(true, true, true, true, true, true);
+        columnCustomerL.getCell(i + 1, 1).setBorder(true, true, true, true, true, true).setHorizontalAlignment("center");
         billL[i] = billDT[i];
-        columnBillL.getCell(i + 1, 1).setBorder(true, true, true, true, true, true);
+        columnBillL.getCell(i + 1, 1).setBorder(true, true, true, true, true, true).setHorizontalAlignment("center");
         phuongThucL[i] = phuongThucDT[i];
         let colorPT = "";
         let colorTextPT = "";
