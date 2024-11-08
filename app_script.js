@@ -15,9 +15,11 @@ function createOrUpdateSheetLuong() {
     sheetLuong.getDataRange().setVerticalAlignment("middle");
 
     var lastColumn = sheetLuong.getLastColumn();
-    var rangeUnMerge = sheetLuong.getRange(3, 1, 2, lastColumn);
-    rangeUnMerge.breakApart();
-    rangeUnMerge.clearContent().clearFormat().setBackground("#ffffff").setBorder(false, false, false, false, false, false).setFontFamily("Arial").setFontSize(12);
+    if (lastColumn > 3) {
+      var rangeUnMerge = sheetLuong.getRange(3, 1, 2, lastColumn);
+      rangeUnMerge.breakApart();
+      rangeUnMerge.clearContent().clearFormat().setBackground("#ffffff").setBorder(false, false, false, false, false, false).setFontFamily("Arial").setFontSize(12);
+    }
 
     sheetLuong.setColumnWidth(1, 120)
       .setColumnWidth(2, 150)
@@ -259,7 +261,7 @@ function tinhLuong() {
 
         const curentThoPhu = listThoPhu.find(item => item.name == thoPhuDT[i]);
         if (curentThoPhu) {
-          if (customerDT[i][0].toLowerCase() == "bsp" || customerDT[i][0].toLowerCase() == "gội") {
+          if (customerDT[i][0].toLowerCase() == "bsp" || customerDT[i][0].toLowerCase() == "gội" || customerDT[i][0].toLowerCase() == "cắt") {
             sheetLuong.getRange(dongBatDauLuong + i, curentThoPhu.index)
               .setValue(billDT[i] / 100 * 20)
               .setHorizontalAlignment("right")
