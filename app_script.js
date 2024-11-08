@@ -228,7 +228,7 @@ function tinhLuong() {
         sheetLuong.getRange(dongBatDauLuong + i, 1, 1, 50).clearContent().clearFormat().setBackground("#ffffff").setBorder(false, false, false, false, false, false).setFontFamily("Arial").setFontSize(12);
 
         dateL[i] = dateDT[i];
-        columnDateL.getCell(i + 1, 1).setBorder(true, true, true, true, true, true).setHorizontalAlignment("left");
+        columnDateL.getCell(i + 1, 1).setBorder(true, true, true, true, true, true).setHorizontalAlignment("left").setFontWeight("bold");;
         customerL[i] = customerDT[i];
         columnCustomerL.getCell(i + 1, 1).setBorder(true, true, true, true, true, true);
         billL[i] = billDT[i];
@@ -393,27 +393,33 @@ function tinhLuong() {
       let curentDateCheckStr = curentDateCheck ? Utilities.formatDate(curentDateCheck, Session.getScriptTimeZone(), "dd/MM/yyyy") : "DONE";
       let dataStr = data[i][0] ? Utilities.formatDate(data[i][0], Session.getScriptTimeZone(), "dd/MM/yyyy") : "DONE";
       Logger.log("coutSame " + coutSame)
+      Logger.log("data[i][0]  " + (data[i][0] ? "1" : "2"))
+
       Logger.log("startMergeRow " + startMergeRow)
       Logger.log("curentDateCheck " + curentDateCheck)
 
-      if (curentDateCheckStr == dataStr || curentDateCheck == 'DONE') {
+      if (curentDateCheckStr == dataStr || dataStr == 'DONE') {
         Logger.log("Có bằng");
         coutSame += 1;
         if (i == data.length - 1 && coutSame != 1) {
+          Logger.log('on merge 1')
           let valueOld = sheetLuong.getRange(startMergeRow, 1, coutSame, 1).getValue();
-          sheetLuong.getRange(startMergeRow, 1, coutSame, 1).clearContent().merge().setValue(valueOld).setVerticalAlignment("middle");
+          sheetLuong.getRange(startMergeRow, 1, coutSame, 1).clearContent().merge().setValue(valueOld).setVerticalAlignment("middle").setFontWeight("bold");
           startMergeRow += coutSame;
         }
       } else {
         if (coutSame != 1) {
           let valueOld = sheetLuong.getRange(startMergeRow, 1, coutSame, 1).getValue();
-          sheetLuong.getRange(startMergeRow, 1, coutSame, 1).clearContent().merge().setValue(valueOld).setVerticalAlignment("middle");
+          Logger.log('on merge 2')
+
+          sheetLuong.getRange(startMergeRow, 1, coutSame, 1).clearContent().merge().setValue(valueOld).setVerticalAlignment("middle").setFontWeight("bold");
           startMergeRow += coutSame;
         } else {
           startMergeRow += 1;
         }
         coutSame = 1;
-        if (data[i][0]) curentDateCheck = data[i][0];
+        //  if (data[i][0]) 
+        curentDateCheck = data[i][0];
       }
     }
     // end merge cột ngày giống nhau
