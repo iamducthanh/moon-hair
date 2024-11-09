@@ -391,6 +391,8 @@ function tinhLuong() {
     var startMergeRow = startRow;  // Dòng bắt đầu merge
     let curentDateCheck = data[0][0]
     let coutSame = 1;
+    let currentColor = 1;
+    let hangColor = "";
     for (var i = 1; i < data.length; i++) {
       let curentDateCheckStr = curentDateCheck ? Utilities.formatDate(curentDateCheck, Session.getScriptTimeZone(), "dd/MM/yyyy") : "DONE";
       let dataStr = data[i][0] ? Utilities.formatDate(data[i][0], Session.getScriptTimeZone(), "dd/MM/yyyy") : "DONE";
@@ -407,16 +409,39 @@ function tinhLuong() {
           Logger.log('on merge 1')
           let valueOld = sheetLuong.getRange(startMergeRow, 1, coutSame, 1).getValue();
           sheetLuong.getRange(startMergeRow, 1, coutSame, 1).clearContent().merge().setValue(valueOld).setVerticalAlignment("middle").setFontWeight("bold");
+          if (currentColor == 1) {
+            hangColor = "#d9d2e9";
+            currentColor = 2;
+          } else {
+            hangColor = "#ffffff";
+            currentColor = 1;
+          }
+          sheetLuong.getRange(startMergeRow, 1, coutSame, 3).setBackground(hangColor);
           startMergeRow += coutSame;
         }
       } else {
         if (coutSame != 1) {
           let valueOld = sheetLuong.getRange(startMergeRow, 1, coutSame, 1).getValue();
           Logger.log('on merge 2')
-
           sheetLuong.getRange(startMergeRow, 1, coutSame, 1).clearContent().merge().setValue(valueOld).setVerticalAlignment("middle").setFontWeight("bold");
+          if (currentColor == 1) {
+            hangColor = "#d9d2e9";
+            currentColor = 2;
+          } else {
+            hangColor = "#ffffff";
+            currentColor = 1;
+          }
+          sheetLuong.getRange(startMergeRow, 1, coutSame, 3).setBackground(hangColor);
           startMergeRow += coutSame;
         } else {
+          if (currentColor == 1) {
+            hangColor = "#d9d2e9";
+            currentColor = 2;
+          } else {
+            hangColor = "#ffffff";
+            currentColor = 1;
+          }
+          sheetLuong.getRange(startMergeRow, 1, coutSame, 3).setBackground(hangColor);
           startMergeRow += 1;
         }
         coutSame = 1;
@@ -428,4 +453,46 @@ function tinhLuong() {
     ui.alert("Tính lương đã xong.");
 
   }
+}
+
+function exportSheetToPdfAndEmail() {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet(); // Chọn sheet hiện tại
+  var sheetId = sheet.getSheetId(); // Lấy ID của sheet
+
+  // Lấy ID của file Google Sheets
+  var spreadsheetId = SpreadsheetApp.getActiveSpreadsheet().getId();
+
+  // Thiết lập các tham số cho PDF
+  var url = 'https://docs.google.com/spreadsheets/d/' + spreadsheetId + '/export?' +
+            'format=pdf&' + // Định dạng PDF
+            'size=A4&' + // Kích thước giấy
+            'portrait=true&' + // In dọc
+            'fitw=true&' + // Phù hợp với chiều rộng
+            'sheetnames=false&' + // Không hiển thị tên sheet
+            'printtitle=false&' + // Không hiển thị tiêu đề
+            'pagenumbers=true&' + // Hiển thị số trang
+            'gridlines=false&' + // Ẩn đường lưới
+            'fzr=false&' + // Không đông cột
+            'gid=' + sheetId; // ID của sheet
+
+  // Tạo request cho file PDF
+  var token = ScriptApp.getOAuthToken();
+  var response = UrlFetchApp.fetch(url, {
+    headers: {
+      'Authorization': 'Bearer ' + token
+    }
+  });
+
+  // Tạo tệp PDF từ dữ liệu trả về
+  var pdfBlob = response.getBlob().setName(sheet.getName() + ".pdf");
+
+  // Gửi email với file PDF đính kèm
+  var email = "mrthanh260801@gmail.com"; // Thay bằng email người nhận
+  var subject = "Báo cáo PDF từ Google Sheets";
+  var body = "Đây là báo cáo của bạn dưới dạng file PDF.";
+  MailApp.sendEmail(email, subject, body, {
+    attachments: [pdfBlob]
+  });
+
+  Logger.log("Email đã được gửi với file PDF đính kèm.");
 }
