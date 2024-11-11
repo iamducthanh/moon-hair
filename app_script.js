@@ -384,12 +384,14 @@ function tinhLuong() {
 
     // start merge cột ngày giống nhau
     var startRow = 5; // Dòng bắt đầu từ A5
+    lastRowLuong = sheetLuong.getLastRow();
 
     // Lấy tất cả giá trị trong cột A từ dòng 5 trở đi
     var data = sheetLuong.getRange("A" + dongBatDauLuong + ":A" + (lastRowLuong - 1)).getValues();
 
     var startMergeRow = startRow;  // Dòng bắt đầu merge
     let curentDateCheck = data[0][0]
+    Logger.log("curentDateCheck   " + curentDateCheck)
     let coutSame = 1;
     let currentColor = 1;
     let hangColor = "";
